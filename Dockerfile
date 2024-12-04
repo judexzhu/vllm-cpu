@@ -1,6 +1,4 @@
-# This vLLM Dockerfile is used to construct image that can build and run vLLM on x86 CPU platform.
-
-FROM registry.access.redhat.com/ubi9/python-311 AS cpu-setup
+FROM registry.access.redhat.com/ubi9/python-311
 
 USER 0
 
@@ -12,8 +10,6 @@ USER 1001
 
 RUN pip install --upgrade pip \
     && pip install wheel packaging ninja "setuptools>=49.4.0" numpy
-
-FROM cpu-setup AS build
 
 # Fetch the vLLM repo we will build from
 WORKDIR /workspace
@@ -29,7 +25,6 @@ RUN VLLM_TARGET_DEVICE=cpu VLLM_CPU_DISABLE_AVX512=true python3 setup.py install
 WORKDIR /workspace/
 
 RUN ln -s /workspace/vllm/tests  && ln -s /workspace/vllm/examples && ln -s /workspace/vllm/benchmarks
-
 
 EXPOSE 8000
 
